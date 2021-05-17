@@ -47,7 +47,7 @@ const App = () => {
       personService
         .update(targetPerson.id, personObj)
         .then(response => {
-          setPersons(persons.map(person => person.id === targetPerson.id ? response.data : person))
+          setPersons(response.data)
           setNewName('')
           setNewNumber('')
           setNotifMessage(
@@ -116,6 +116,7 @@ const App = () => {
     personService
       .remove(person.id)
       .catch(error => {
+        console.log(error)
         setErrorMessage(
           'Contact ' + person.name + ' was already removed from phonebook'
         )
@@ -132,7 +133,6 @@ const App = () => {
       setTimeout(() => {
         setNotifMessage(null)
       }, 5000)
-
   }
 
   return (

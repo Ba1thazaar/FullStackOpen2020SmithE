@@ -1,7 +1,6 @@
 import React from 'react'
 import DisplayContact from './DisplayContact'
 
-
 const NamesToDisplay = (props) => {
 
   const validNames = props.persons.filter((person) => {
