@@ -1,10 +1,8 @@
 
 const blogsRouter = require('express').Router()
-const jwt = require('jsonwebtoken')
 
 const Blog = require('../models/blog')
 const User = require('../models/user')
-
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -17,8 +15,10 @@ blogsRouter.post('/', async (request, response) => {
   const body = request.body
   const user = request.user
 
+  if(!user){
+    return response.status(401).json({error: 'bad authorization'})
+  }
   var likes = 0;
-
   if(body.likes){
     likes = body.likes
   }
@@ -26,6 +26,8 @@ blogsRouter.post('/', async (request, response) => {
   if(!body.title && !body.url){
     response.status(400).end()
   }
+
+
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -59,12 +61,9 @@ blogsRouter.delete('/:id', async (request, response) => {
 })
 
 blogsRouter.put('/:id', async (request,response) => {
-  const blog = request.body
 
-  await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-  .then(updatedBlog => {
-      response.json(updatedBlog.toJSON())
-    })
+  const newBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true })
+  response.json(newBlog.toJSON)
 })
 
 module.exports = blogsRouter
